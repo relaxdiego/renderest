@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) Mark Maglana
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+set -e
+
+failures=false
+parent_dir=$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )
+render=$parent_dir/render
+template=$parent_dir/test-template
+
+it() {
+    cmd="$2 $(basename $render) $(basename $template)"
+    expected=
+
+    while IFS= read -r line; do expected+="$line"$'\n'; done;
+
+    expected=${expected%$'\n'}
+    if received=$(eval "$2 $render $template" 2>&1); then
+        foo=bar # noop
+    fi
+
+    if [[ "$received" == "$expected" ]]; then
+        echo -e "\e[32mPASSED:\e[39m it $1"
+        echo "        $cmd"
+    else
+        echo -e "\e[31mFAILED:\e[39m it $1"
+        echo "        $cmd"
+        echo
+        echo "============= expected ============="
+        printf '%s\n' "$expected"
+        echo "============= received ============="
+        printf '%s\n' "$received"
+        echo "===================================="
+        failures=true
+    fi
+
+    echo ""
+}
+
+test_value=$(uuidgen)
+
+it "renders the template as expected" "test_variable=$test_value" <<EOF
+somerandomtext${test_value}morerandomtext
+\$symbol_that_doesnt_get_rendered
+EOF
+
+
+it "throws an error if test_variable is undefined" "someother_var=someother_value" <<EOF
+ERROR: test_variable is not defined
+EOF
+
+
+it "doesn't throw an error if test_variable is defined but empty" "test_variable=" <<EOF
+somerandomtextmorerandomtext
+\$symbol_that_doesnt_get_rendered
+EOF
+
+
+test_value='http://'$(uuidgen)'/some/path'
+
+it "works with values that have forward slashes" "test_variable=$test_value" <<EOF
+somerandomtext${test_value}morerandomtext
+\$symbol_that_doesnt_get_rendered
+EOF
+
+
+if [[ $failures == true ]]; then
+    exit 1
+else
+    exit 0
+fi

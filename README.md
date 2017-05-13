@@ -28,7 +28,7 @@ Write it to a file by redirecting stdout to a file:
 
 
 ```
-$ person=Bob ./render template.txt
+$ person=Bob ./render template.txt > rendered.txt
 ```
 
 Or read the value from a variable file by sourcing it first. Best done inside a script:

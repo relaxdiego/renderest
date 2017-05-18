@@ -31,7 +31,7 @@ Write it to a file by redirecting stdout to a file:
 $ person=Bob ./render template.txt > rendered.txt
 ```
 
-Or read the value from a variable file by sourcing it first. Best done inside a script:
+Or declare your variables in a file and then source it. Best done inside a script:
 
 ```bash
 #!/usr/bin/env bash

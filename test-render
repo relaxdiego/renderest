@@ -28,13 +28,17 @@ render=$parent_dir/render
 template=$parent_dir/test-template
 
 it() {
-    cmd="$2 $(basename $render) $3 $(basename $template) $4"
+    local test_name=$1
+    local env_vars=$2
+    local render_args=$3
+
+    cmd="$env_vars $(basename $render) $render_args"
     expected=
 
     while IFS= read -r line; do expected+="$line"$'\n'; done;
 
     expected=${expected%$'\n'}
-    if received=$(eval "$2 $render $3 $template $4" 2>&1); then
+    if received=$(eval "$env_vars $render $render_args" 2>&1); then
         foo=bar # noop
     fi
 
@@ -58,27 +62,27 @@ it() {
 
 test_value=$(uuidgen)
 
-it "renders the template as expected" "test_variable=$test_value" <<EOF
+it "renders the template as expected" "test_variable=$test_value" "$template" <<EOF
 somerandomtext${test_value}morerandomtext
 \$symbol_that_doesnt_get_rendered
 EOF
 
 
-it "throws an error if test_variable is undefined" "someother_var=someother_value" <<EOF
+it "throws an error if test_variable is undefined" "someother_var=someother_value" "$template" <<EOF
 ERROR: test_variable is not defined
 EOF
 
 
-it "doesn't throw an error if test_variable is defined but empty" "test_variable=" <<EOF
+it "doesn't throw an error if test_variable is defined but empty" "test_variable=" "$template" <<EOF
 somerandomtextmorerandomtext
 \$symbol_that_doesnt_get_rendered
 EOF
 
-it "does throw an error if test_variable is defined but empty if --no-empty flag is provided" "test_variable=" "--no-empty" <<EOF
+it "does throw an error if test_variable is defined but empty if --no-empty flag is provided" "test_variable=" "--no-empty $template" <<EOF
 ERROR: test_variable is empty
 EOF
 
-it "doesn't throw an error if test_variable is defined but empty and --no-empty flag is provided on last position" "test_variable=" "" "--no-empty" <<EOF
+it "doesn't throw an error if test_variable is defined but empty and --no-empty flag is provided on last position" "test_variable=" "$template --no-empty" <<EOF
 somerandomtextmorerandomtext
 \$symbol_that_doesnt_get_rendered
 EOF
@@ -87,7 +91,7 @@ EOF
 
 test_value='http://'$(uuidgen)'/some/path'
 
-it "works with values that have forward slashes" "test_variable=$test_value" <<EOF
+it "works with values that have forward slashes" "test_variable=$test_value" "$template" <<EOF
 somerandomtext${test_value}morerandomtext
 \$symbol_that_doesnt_get_rendered
 EOF

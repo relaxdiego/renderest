@@ -23,6 +23,15 @@
 # SOFTWARE.
 set -e
 
+no_empty=false
+
+case $1 in
+    -e|--no-empty)
+    no_empty=true
+    shift
+    ;;
+esac
+
 # Get all variable names used in the template
 varnames=$(grep -oE '\{\{([A-Za-z0-9_]+)\}\}' $1 | sed -rn 's/.*\{\{([A-Za-z0-9_]+)\}\}.*/\1/p' | sort | uniq)
 
@@ -33,6 +42,9 @@ for varname in $varnames; do
         # Check if the variable named $varname is defined
         if [ -z ${!varname+x} ]; then
                 echo "ERROR: $varname is not defined" >&2
+                error=true
+        elif [ $no_empty = true ] && [ -z ${!varname} ]; then
+                echo "ERROR: $varname is empty" >&2
                 error=true
         else
                 # Get the value of the variable named $varname and escape

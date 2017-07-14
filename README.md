@@ -39,6 +39,12 @@ source ./myvalues
 ./render template.txt > rendered.txt
 ```
 
+Error out on empty env variables:
+
+```
+$ person= ./render --no-empty template.txt > rendered.txt
+```
+
 ## Testing
 
 Just run:

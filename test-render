@@ -28,13 +28,13 @@ render=$parent_dir/render
 template=$parent_dir/test-template
 
 it() {
-    cmd="$2 $(basename $render) $(basename $template)"
+    cmd="$2 $(basename $render) $3 $(basename $template) $4"
     expected=
 
     while IFS= read -r line; do expected+="$line"$'\n'; done;
 
     expected=${expected%$'\n'}
-    if received=$(eval "$2 $render $template" 2>&1); then
+    if received=$(eval "$2 $render $3 $template $4" 2>&1); then
         foo=bar # noop
     fi
 
@@ -73,6 +73,16 @@ it "doesn't throw an error if test_variable is defined but empty" "test_variable
 somerandomtextmorerandomtext
 \$symbol_that_doesnt_get_rendered
 EOF
+
+it "does throw an error if test_variable is defined but empty if --no-empty flag is provided" "test_variable=" "--no-empty" <<EOF
+ERROR: test_variable is empty
+EOF
+
+it "doesn't throw an error if test_variable is defined but empty and --no-empty flag is provided on last position" "test_variable=" "" "--no-empty" <<EOF
+somerandomtextmorerandomtext
+\$symbol_that_doesnt_get_rendered
+EOF
+
 
 
 test_value='http://'$(uuidgen)'/some/path'

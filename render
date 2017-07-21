@@ -59,4 +59,7 @@ if [[ $error = true ]]; then
 elif [[ -n $expressions ]]; then
         cat $1 | eval sed -r "$expressions"
         exit 0
+else
+        cat $1
+        exit 0
 fi

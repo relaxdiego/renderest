@@ -21,9 +21,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-set -e
+set -eu
 
 no_empty=false
+error=false
 
 case $1 in
     -e|--no-empty)
@@ -41,9 +42,15 @@ expressions=""
 for varname in $varnames; do
         # Check if the variable named $varname is defined
         if [ -z ${!varname+x} ]; then
+                if [[ $error = false ]]; then
+                        echo "Error found in file $1:" >&2
+                fi
                 echo "ERROR: $varname is not defined" >&2
                 error=true
         elif [ $no_empty = true ] && [ -z ${!varname} ]; then
+                if [[ $error = false ]]; then
+                        echo "Error found in file $1:" >&2
+                fi
                 echo "ERROR: $varname is empty" >&2
                 error=true
         else

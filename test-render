@@ -69,6 +69,7 @@ EOF
 
 
 it "throws an error if test_variable is undefined" "someother_var=someother_value" "$template" <<EOF
+Error found in file /home/travis/build/relaxdiego/renderest/test-template:
 ERROR: test_variable is not defined
 EOF
 
@@ -79,6 +80,7 @@ somerandomtextmorerandomtext
 EOF
 
 it "does throw an error if test_variable is defined but empty if --no-empty flag is provided" "test_variable=" "--no-empty $template" <<EOF
+Error found in file /home/travis/build/relaxdiego/renderest/test-template:
 ERROR: test_variable is empty
 EOF
 

@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-[![Build Status](https://travis-ci.org/relaxdiego/renderest.svg?branch=master)](https://travis-ci.org/relaxdiego/renderest)
+  <img src="https://travis-ci.org/relaxdiego/renderest.svg?branch=master">
 </p>
 
 This repo is the companion source code for my article on

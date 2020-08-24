@@ -1,12 +1,13 @@
-# renderest
+<p align="center">
+  <img src="https://raw.githubusercontent.com/relaxdiego/renderest/master/logo.png">
+</p>
 
 [![Build Status](https://travis-ci.org/relaxdiego/renderest.svg?branch=master)](https://travis-ci.org/relaxdiego/renderest)
 
-Because it's better than a renderer! Why do I think it's better than
-all other renderers out there? How dare you ask me that question!
-Move along now!
+This repo is the companion source code for my article on
+[Templating and Testing with BASH](https://relaxdiego.com/2017/05/templating-and-testing-with-bash.html).
 
-This repo is the companion source code for my article at https://relaxdiego.com/2017/05/templating-and-testing-with-bash.html
+## Usage
 
 Given template.txt:
 
@@ -27,7 +28,6 @@ Hello, Bob!
 ```
 
 Write it to a file by redirecting stdout to a file:
-
 
 ```
 $ person=Bob ./render template.txt > rendered.txt

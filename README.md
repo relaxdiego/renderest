@@ -2,7 +2,9 @@
   <img src="https://raw.githubusercontent.com/relaxdiego/renderest/master/logo.png">
 </p>
 
+<p align="center">
 [![Build Status](https://travis-ci.org/relaxdiego/renderest.svg?branch=master)](https://travis-ci.org/relaxdiego/renderest)
+</p>
 
 This repo is the companion source code for my article on
 [Templating and Testing with BASH](https://relaxdiego.com/2017/05/templating-and-testing-with-bash.html).
